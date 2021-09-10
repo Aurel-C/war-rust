@@ -1,41 +1,41 @@
 #![allow(dead_code)]
-use std::fmt;
-use rand::thread_rng;
 use rand::seq::SliceRandom;
+use rand::thread_rng;
 use std::cmp::Ordering;
+use std::fmt;
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 pub enum Color {
-    Coeur,
-    Carreau,
-    Pique,
-    Trefle,
+    Hearts,
+    Diamonds,
+    Spades,
+    Clubs,
 }
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 pub enum Value {
-    Deux,
-    Trois,
-    Quatre,
-    Cinq,
+    Two,
+    Three,
+    Four,
+    Five,
     Six,
-    Sept,
-    Huit,
-    Neuf,
-    Dix,
-    Valet,
-    Dame,
-    Roi,
-    As,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+    Jack,
+    Queen,
+    King,
+    Ace,
 }
 
 impl fmt::Display for Color {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let color = match *self {
-            Color::Coeur => "♥",
-            Color::Carreau => "♦",
-            Color::Pique => "♠",
-            Color::Trefle => "♣",
+            Color::Hearts => "♥",
+            Color::Diamonds => "♦",
+            Color::Spades => "♠",
+            Color::Clubs => "♣",
         };
         write!(f, "{}", color)
     }
@@ -44,25 +44,25 @@ impl fmt::Display for Color {
 impl fmt::Display for Value {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let color = match *self {
-            Value::Deux => "2",
-            Value::Trois => "3",
-            Value::Quatre => "4",
-            Value::Cinq => "5",
+            Value::Two => "2",
+            Value::Three => "3",
+            Value::Four => "4",
+            Value::Five => "5",
             Value::Six => "6",
-            Value::Sept => "7",
-            Value::Huit => "8",
-            Value::Neuf => "9",
-            Value::Dix => "10",
-            Value::Valet => "Valet",
-            Value::Dame => "Dame",
-            Value::Roi => "Roi",
-            Value::As => "As",
+            Value::Seven => "7",
+            Value::Eight => "8",
+            Value::Nine => "9",
+            Value::Ten => "10",
+            Value::Jack => "Jack",
+            Value::Queen => "Queen",
+            Value::King => "King",
+            Value::Ace => "Ace",
         };
         write!(f, "{}", color)
     }
 }
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 pub struct Card {
     pub color: Color,
     pub value: Value,
@@ -70,9 +70,8 @@ pub struct Card {
 
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} {}", self.value, self.color)
+        write!(f, "{}{}", self.color, self.value)
     }
-
 }
 
 impl Ord for Card {
@@ -95,35 +94,52 @@ impl PartialEq for Card {
 
 impl Eq for Card {}
 
-pub struct Deck{
-    pub deck :Vec<Card>
+pub struct Deck {
+    pub deck: Vec<Card>,
 }
-    
-impl Deck{
-    pub fn build()-> Deck{
-        let mut d = Deck{deck:Vec::new()};
-        for col in [Color::Carreau,Color::Coeur,Color::Pique,Color::Trefle].iter(){
-            for val in [Value::As,Value::Roi,Value::Dame,Value::Valet,Value::Dix,
-            Value::Neuf,Value::Huit,Value::Sept,Value::Six,Value::Cinq,Value::Quatre,
-            Value::Trois,Value::Deux].iter(){
-                d.deck.push(Card{color:*col,value:*val});
+
+impl Deck {
+    pub fn build() -> Deck {
+        let mut d = Deck { deck: Vec::new() };
+        for col in [Color::Hearts, Color::Diamonds, Color::Spades, Color::Clubs].iter() {
+            for val in [
+                Value::Two,
+                Value::Three,
+                Value::Four,
+                Value::Five,
+                Value::Six,
+                Value::Seven,
+                Value::Eight,
+                Value::Nine,
+                Value::Ten,
+                Value::Jack,
+                Value::Queen,
+                Value::King,
+                Value::Ace,
+            ]
+            .iter()
+            {
+                d.deck.push(Card {
+                    color: *col,
+                    value: *val,
+                });
             }
         }
         d
     }
-    pub fn shuffle(&mut self){
+    pub fn shuffle(&mut self) {
         self.deck.shuffle(&mut thread_rng());
     }
-    pub fn give(&mut self)->Card{
+    pub fn give(&mut self) -> Card {
         self.deck.remove(0)
     }
-    pub fn take(&mut self,c :Card){
+    pub fn take(&mut self, c: Card) {
         self.deck.push(c);
     }
-    pub fn size(&self)->usize{
+    pub fn size(&self) -> usize {
         self.deck.len()
     }
-    pub fn empty(&self)->bool{
-        self.size()==0
+    pub fn empty(&self) -> bool {
+        self.size() == 0
     }
 }
